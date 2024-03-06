@@ -3,14 +3,13 @@ package com.example.spotifyapp;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.spotifyapp.R;
 import com.spotify.sdk.android.auth.AuthorizationClient;
-import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
 import org.json.JSONException;
@@ -53,15 +52,18 @@ public class MainActivity extends AppCompatActivity {
         Button codeBtn = (Button) findViewById(R.id.code_btn);
         Button profileBtn = (Button) findViewById(R.id.profile_btn);
 
+        // Initialize the SpotifyRequests object
+        SpotifyRequests spotifyRequests = new SpotifyRequests(CLIENT_ID, REDIRECT_URI);
+
 
         // Set the click listeners for the buttons
 
         tokenBtn.setOnClickListener((v) -> {
-            getToken();
+            spotifyRequests.getToken(MainActivity.this);
         });
 
         codeBtn.setOnClickListener((v) -> {
-            getCode();
+            spotifyRequests.getCode(MainActivity.this);
         });
 
         profileBtn.setOnClickListener((v) -> {
@@ -69,29 +71,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-    /**
-     * Get token from Spotify
-     * This method will open the Spotify login activity and get the token
-     * What is token?
-     * https://developer.spotify.com/documentation/general/guides/authorization-guide/
-     */
-    public void getToken() {
-        final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
-        AuthorizationClient.openLoginActivity(MainActivity.this, AUTH_TOKEN_REQUEST_CODE, request);
-    }
-
-    /**
-     * Get code from Spotify
-     * This method will open the Spotify login activity and get the code
-     * What is code?
-     * https://developer.spotify.com/documentation/general/guides/authorization-guide/
-     */
-    public void getCode() {
-        final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.CODE);
-        AuthorizationClient.openLoginActivity(MainActivity.this, AUTH_CODE_REQUEST_CODE, request);
-    }
-
 
     /**
      * When the app leaves this activity to momentarily get a token/code, this function
@@ -164,30 +143,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setTextAsync(final String text, TextView textView) {
         runOnUiThread(() -> textView.setText(text));
-    }
-
-    /**
-     * Get authentication request
-     *
-     * @param type the type of the request
-     * @return the authentication request
-     */
-    private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
-        return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
-                .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email", "user-read-recently-played", "user-top-read" }) // <--- Change the scope of your requested token here
-                .setCampaign("your-campaign-token")
-                .build();
-    }
-
-
-    /**
-     * Gets the redirect Uri for Spotify
-     *
-     * @return redirect Uri object
-     */
-    private Uri getRedirectUri() {
-        return Uri.parse(REDIRECT_URI);
     }
 
     private void cancelCall() {
