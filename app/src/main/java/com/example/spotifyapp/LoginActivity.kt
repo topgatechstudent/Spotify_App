@@ -12,40 +12,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
-            LoginScreen(navController)
+            LoginScreen()
         }
     }
 }
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen() {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val navController = rememberNavController()
-
-    Button(
-        onClick = {
-            navController.navigate("createAccount")
-        },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text("Create Account")
-    }
-
-    NavHost(navController = navController, startDestination = "login") {
-        composable("login") { LoginScreen(navController) }
-        composable("createAccount") { CreateAccountScreen(navController) }
-    }
 
     Column(
         modifier = Modifier
@@ -84,51 +64,6 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             androidx.compose.material.Text("Create Account")
-        }
-
-    }
-}
-
-@Composable
-fun CreateAccountScreen(navController: NavController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Create Account", style = MaterialTheme.typography.h5)
-        Spacer(modifier = Modifier.height(20.dp))
-
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                println("Creating account with Username: $username, Password: $password")
-                // Here, replace println with your account creation logic
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Create Account")
         }
     }
 }
