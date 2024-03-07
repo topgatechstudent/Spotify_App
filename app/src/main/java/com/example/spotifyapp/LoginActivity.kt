@@ -22,13 +22,7 @@ class LoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            Surface(color = MaterialTheme.colors.background) {
-                NavHost(navController = navController, startDestination = "login") {
-                    composable("login") { LoginScreen(navController) }
-                    composable("createAccount") { CreateAccountScreen(navController) }
-                    // Add other composable destinations as needed
-                }
-            }
+            LoginScreen(navController)
         }
     }
 }
