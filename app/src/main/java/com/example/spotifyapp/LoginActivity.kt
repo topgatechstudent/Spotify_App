@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
@@ -184,7 +183,9 @@ fun LoginScreen(onNavigateToCreateAccount: () -> Unit) {
                         // Comparing the provided password with the stored one
                         if (storedPassword == password) {
                             // Navigating to MainActivity if the password is correct
-                            val intent = Intent(context, MainActivity::class.java)
+                            val intent = Intent(context, MainActivity::class.java).apply {
+                                putExtra("username", username) // Pass the username as an extra
+                            }
                             context.startActivity(intent)
                         } else {
                             // Show a toast if the password is incorrect
