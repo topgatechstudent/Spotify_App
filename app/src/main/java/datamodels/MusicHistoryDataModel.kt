@@ -12,12 +12,12 @@ data class SpotifyHistoryResponse(
 data class PlayHistoryObject(
     val track: Track,
     val played_at: String,
-    val context: TrackContext?
+    //val context: TrackContext?
 )
 
 @Serializable
 data class Track(
-    val album: Album,
+    /*val album: Album,
     val artists: List<Artist>,
     val available_markets: List<String>,
     val disc_number: Int,
@@ -26,16 +26,16 @@ data class Track(
     val external_urls: Map<String, String>,
     val href: String,
     val id: String,
-    val is_playable: Boolean = false,
+    val is_playable: Boolean = false, */
     val name: String,
-    val popularity: Int,
+    /*val popularity: Int,
     val preview_url: String?,
     val track_number: Int,
     val type: String,
-    val uri: String,
+    val uri: String, */
 )
 
-@Serializable
+/*@Serializable
 data class Album(
     val album_type: String,
     val total_tracks: Int,
@@ -74,4 +74,4 @@ data class TrackContext(
     val href: String?,
     val external_urls: Map<String, String>?,
     val uri: String
-)
+)*/

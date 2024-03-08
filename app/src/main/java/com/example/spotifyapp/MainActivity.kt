@@ -13,9 +13,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -23,10 +36,16 @@ import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.spotifyapp.ui.theme.LightBlue
 import com.example.spotifyapp.ui.theme.Purple
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.example.spotifyapp.callbacks.SpotifyHistoryCallback
+import com.example.spotifyapp.viewmodels.MainViewModel
 import datamodels.SpotifyHistoryResponse
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -42,12 +61,40 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val username = intent.getStringExtra("username")
         setContent {
-            MainScreen(username ?: "User")
+            if (username != null) {
+                MyApp(username)
+            }
         }
     }
 
     @Composable
-    fun MainScreen(username : String) {
+    fun MyApp(username: String) {
+        // Obtain ViewModel instance
+        val mainViewModel: MainViewModel = viewModel()
+
+        // Now you can use mainViewModel
+        myAppContent(mainViewModel, username)
+    }
+
+
+    @Composable
+    fun myAppContent(viewModel: MainViewModel, username: String) {
+        val navController = rememberNavController()
+        val trackNames by viewModel.trackNames.collectAsState()
+
+        NavHost(navController = navController, startDestination = "main") {
+            composable("main") {
+                MainScreen(username, navController, viewModel)
+            }
+            composable("wrapped") {
+                Wrapped(trackNames, navController)
+            }
+        }
+    }
+
+
+    @Composable
+    fun MainScreen(username : String,navController: NavController, viewModel: MainViewModel) {
         val gradientColors = listOf(Cyan, LightBlue, Purple)
         Column(
             modifier = Modifier
@@ -78,7 +125,12 @@ class MainActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    retrieveSpotifyHistory()
+                    if (!::mAccessToken.isInitialized) {
+                        Toast.makeText(this@MainActivity, "Please login with Spotify first", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    viewModel.retrieveSpotifyHistory(mAccessToken)
+                    navController.navigate("wrapped")
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -87,37 +139,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun retrieveSpotifyHistory() {
-        if (!::mAccessToken.isInitialized) {
-            Toast.makeText(this@MainActivity, "Access token not initialized", Toast.LENGTH_LONG).show()
-            return
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun Wrapped(trackNames: List<String>, navController: NavController) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Wrapped Tracks") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                )
+            }
+        ) { innerPadding ->
+            LazyColumn(modifier = Modifier.padding(innerPadding)) {
+                items(trackNames) { trackName ->
+                    Text(text = trackName, modifier = Modifier.padding(16.dp))
+                }
+            }
         }
-        spotifyRequests.getSpotifyHistory(mAccessToken, object : SpotifyHistoryCallback {
-            override fun onSuccess(jsonResponse: String) {
-                Log.d("SpotifyHistory", jsonResponse)
-                val json = Json { ignoreUnknownKeys = true } // Create a Json instance with a configuration to ignore unknown keys
-                try {
-                    // Decode the JSON string into Kotlin objects
-                    val trackHistory = json.decodeFromString<SpotifyHistoryResponse>(jsonResponse)
-                    Log.d("SpotifyHistory", trackHistory.toString())
-
-                } catch (e: Exception) {
-                    // Handle possible parsing errors
-                    runOnUiThread {
-                        Log.d("SpotifyHistory", "Failed to parse Spotify history: ${e.message}")
-                        Toast.makeText(this@MainActivity, "Failed to parse Spotify history: ${e.message}", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-
-            override fun onFailure(e: Exception) {
-                // Handle failure
-                runOnUiThread {
-                    // Update your UI or notify the user of the error
-                    Toast.makeText(this@MainActivity, "Error fetching Spotify history: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
