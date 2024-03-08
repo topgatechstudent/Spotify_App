@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.spotifyapp.R;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
@@ -23,7 +22,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class AuthenticationActivity extends AppCompatActivity {
 
     public static final String CLIENT_ID = "3e5170dac3b84657bd5747aa48749987";
     public static final String REDIRECT_URI = "gt-wrapped://auth";
@@ -59,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
         // Set the click listeners for the buttons
 
         tokenBtn.setOnClickListener((v) -> {
-            spotifyRequests.getToken(MainActivity.this);
+            spotifyRequests.getToken(AuthenticationActivity.this);
         });
 
         codeBtn.setOnClickListener((v) -> {
-            spotifyRequests.getCode(MainActivity.this);
+            spotifyRequests.getCode(AuthenticationActivity.this);
         });
 
         profileBtn.setOnClickListener((v) -> {
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d("HTTP", "Failed to fetch data: " + e);
-                Toast.makeText(MainActivity.this, "Failed to fetch data, watch Logcat for more details",
+                Toast.makeText(AuthenticationActivity.this, "Failed to fetch data, watch Logcat for more details",
                         Toast.LENGTH_SHORT).show();
             }
 
@@ -126,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     setTextAsync(jsonObject.toString(3), profileTextView);
                 } catch (JSONException e) {
                     Log.d("JSON", "Failed to parse data: " + e);
-                    Toast.makeText(MainActivity.this, "Failed to parse data, watch Logcat for more details",
+                    Toast.makeText(AuthenticationActivity.this, "Failed to parse data, watch Logcat for more details",
                             Toast.LENGTH_SHORT).show();
                 }
             }
