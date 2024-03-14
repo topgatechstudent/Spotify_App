@@ -35,3 +35,6 @@ If finished grab new assignment from trello and update here - https://trello.com
 
 ### Used for retrieving data to be modified for app
 
+Persistent Spotify so we dont have to keep logging in
+
+https://stackoverflow.com/questions/29400426/where-do-i-persist-the-spotify-access-token
