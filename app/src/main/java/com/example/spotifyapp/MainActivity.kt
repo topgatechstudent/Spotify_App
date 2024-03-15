@@ -1,8 +1,6 @@
 package com.example.spotifyapp
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,18 +41,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.spotifyapp.ui.theme.LightBlue
 import com.example.spotifyapp.ui.theme.Purple
-import com.spotify.sdk.android.auth.AuthorizationClient
-import com.example.spotifyapp.callbacks.SpotifyHistoryCallback
 import com.example.spotifyapp.viewmodels.MainViewModel
-import datamodels.SpotifyHistoryResponse
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
-    val clientID = "3e5170dac3b84657bd5747aa48749987"
-    val redirectURI = "gt-wrapped://auth"
-    val spotifyRequests = SpotifyRequests(clientID, redirectURI)
     private lateinit var mAccessToken : String
     private lateinit var mAccessCode : String
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +65,6 @@ class MainActivity : ComponentActivity() {
         myAppContent(mainViewModel, username)
     }
 
-
     @Composable
     fun myAppContent(viewModel: MainViewModel, username: String) {
         val navController = rememberNavController()
@@ -91,7 +79,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
     @Composable
     fun MainScreen(username : String,navController: NavController, viewModel: MainViewModel) {
@@ -114,14 +101,7 @@ class MainActivity : ComponentActivity() {
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    spotifyRequests.getToken(this@MainActivity)
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                androidx.compose.material.Text("Login With Spotify")
-            }
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
@@ -138,7 +118,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Wrapped(trackNames: List<String>, navController: NavController) {
@@ -162,21 +141,6 @@ class MainActivity : ComponentActivity() {
                     Text(text = trackName, modifier = Modifier.padding(16.dp))
                 }
             }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        val response = AuthorizationClient.getResponse(resultCode, data)
-
-        // Check which request code is present (if any)
-        if (AuthenticationActivity.AUTH_TOKEN_REQUEST_CODE == requestCode) {
-            mAccessToken = response.accessToken
-            Log.d("Token", mAccessToken)
-            spotifyRequests.getCode(this@MainActivity)
-        } else if (AuthenticationActivity.AUTH_CODE_REQUEST_CODE == requestCode) {
-            mAccessCode = response.code
-            Log.d("Code", mAccessCode)
         }
     }
 }
