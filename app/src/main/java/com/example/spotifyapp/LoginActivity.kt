@@ -36,9 +36,6 @@ import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
 
 class LoginActivity : ComponentActivity() {
-    private val clientID = "3e5170dac3b84657bd5747aa48749987"
-    private val redirectURI = "gt-wrapped://auth"
-    private val spotifyRequests = SpotifyRequests(clientID, redirectURI)
     private lateinit var mAccessToken : String
     private lateinit var mAccessCode : String
 
@@ -163,7 +160,6 @@ class LoginActivity : ComponentActivity() {
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
 
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -193,14 +189,8 @@ class LoginActivity : ComponentActivity() {
                         if (task.isSuccessful) {
                             val snapshot = task.result
                             val storedPassword = snapshot.child("password").value.toString()
-
                             // Comparing the provided password with the stored one
                             if (storedPassword == password) {
-                                spotifyRequests.getToken(this@LoginActivity)
-                                if (!::mAccessToken.isInitialized) {
-                                    Toast.makeText(this@LoginActivity, "Please login with Spotify first", Toast.LENGTH_SHORT).show()
-                                    return@addOnCompleteListener
-                                }
                                 // Navigating to MainActivity if the password is correct
                                 val intent = Intent(context, MainActivity::class.java).apply {
                                     putExtra("username", username) // Pass the username as an extra
@@ -240,4 +230,4 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    }
+}
