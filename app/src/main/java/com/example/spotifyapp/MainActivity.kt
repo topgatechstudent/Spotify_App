@@ -76,7 +76,6 @@ class MainActivity : ComponentActivity() {
         myAppContent(mainViewModel, username)
     }
 
-
     @Composable
     fun myAppContent(viewModel: MainViewModel, username: String) {
         val navController = rememberNavController()
@@ -91,7 +90,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
     @Composable
     fun MainScreen(username : String,navController: NavController, viewModel: MainViewModel) {
@@ -138,6 +136,35 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun SettingsPage(navController: NavController){
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Settings") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier.padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "Settings Page")
+            }
+        }
+    }
+
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
