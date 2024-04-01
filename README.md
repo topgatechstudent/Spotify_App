@@ -3,10 +3,15 @@
 # Update date - 4/1/2024
 
 Created more screens for Wrapped.
+
 Added Lottie file required files
+
 Need to mess around with the UI for dark/light mode
+
 **Important need to start database integration for data to get storage of wrapped
+
 **Implement Navigation for Wrapped Screens
+
 ** Parse through wrapped screens data
 
 # Update date - 3/14/2024
