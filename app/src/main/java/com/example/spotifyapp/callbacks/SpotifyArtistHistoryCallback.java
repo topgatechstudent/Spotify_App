@@ -1,8 +1,6 @@
 package com.example.spotifyapp.callbacks;
 
-import org.json.JSONObject;
-
-public interface SpotifyHistoryCallback {
+public interface SpotifyArtistHistoryCallback {
     void onSuccess(String jsonResponse);
     void onFailure(Exception e);
 }

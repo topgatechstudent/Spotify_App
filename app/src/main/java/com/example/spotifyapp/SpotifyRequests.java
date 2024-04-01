@@ -3,9 +3,9 @@ package com.example.spotifyapp;
 import android.app.Activity;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.spotifyapp.callbacks.SpotifyHistoryCallback;
+import com.example.spotifyapp.callbacks.SpotifyArtistHistoryCallback;
+import com.example.spotifyapp.callbacks.SpotifyTrackHistoryCallback;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -57,9 +57,36 @@ public class SpotifyRequests {
         AuthorizationClient.openLoginActivity(activity, AUTH_CODE_REQUEST_CODE, request);
     }
 
-    public void getSpotifyHistory(String mAccessToken, SpotifyHistoryCallback callback) {
+    public void getSpotifyTrackHistory(String mAccessToken, SpotifyTrackHistoryCallback callback) {
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/player/recently-played")
+                .url("https://api.spotify.com/v1/me/top/tracks?limit=10")
+                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .build();
+        cancelCall();
+        mCall = mOkHttpClient.newCall(request);
+        mCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("HTTP", "Failed to fetch data: " + e);
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    final JSONObject jsonObject = new JSONObject(response.body().string());
+                    callback.onSuccess(jsonObject.toString());
+                } catch (JSONException e) {
+                    Log.d("JSON", "Failed to parse data: " + e);
+                    callback.onFailure(e);
+                }
+            }
+        });
+    }
+
+    public void getSpotifyArtistHistory(String mAccessToken, SpotifyArtistHistoryCallback callback) {
+        final Request request = new Request.Builder()
+                .url("https://api.spotify.com/v1/me/top/artists?limit=10")
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
         cancelCall();

@@ -1,17 +1,15 @@
 package datamodels
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 
 @Serializable
-data class SpotifyHistoryResponse(
-    val items: List<PlayHistoryObject>
+data class SpotifyTrackHistoryResponse(
+    val items: List<PlayTrackHistoryObject>
 )
 
 @Serializable
-data class PlayHistoryObject(
+data class PlayTrackHistoryObject(
     val track: Track,
-    val played_at: String,
+    val playedAt: String,
     //val context: TrackContext?
 )
 

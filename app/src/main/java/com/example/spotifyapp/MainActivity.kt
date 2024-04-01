@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,12 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,13 +46,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.spotifyapp.ui.theme.LightBlue
 import com.example.spotifyapp.ui.theme.Purple
-import com.spotify.sdk.android.auth.AuthorizationClient
-import com.example.spotifyapp.callbacks.SpotifyHistoryCallback
+import com.example.spotifyapp.AnimatedPreloader
 import com.example.spotifyapp.viewmodels.MainViewModel
-import datamodels.SpotifyHistoryResponse
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import org.json.JSONObject
+import com.spotify.sdk.android.auth.AuthorizationClient
 
 class MainActivity : ComponentActivity() {
     val clientID = "3e5170dac3b84657bd5747aa48749987"
@@ -80,38 +79,33 @@ class MainActivity : ComponentActivity() {
     fun myAppContent(viewModel: MainViewModel, username: String) {
         val navController = rememberNavController()
         val trackNames by viewModel.trackNames.collectAsState()
+        val artistNames by viewModel.artistNames.collectAsState()
 
         NavHost(navController = navController, startDestination = "main") {
             composable("main") {
-                MainScreen(username, navController, viewModel)
+                MainScreen(navController, viewModel)
             }
-            composable("wrapped") {
-                Wrapped(trackNames, navController)
+            composable("settings") {
+                SettingsPage(navController)
+            }
+            composable("wrappedStart") {
+                WrappedScreen1(username, navController)
+            }
+            composable("wrappedTracks") {
+                WrappedScreen2(trackNames, navController)
+            }
+            composable("wrappedArtists") {
+                WrappedScreen3(artistNames, navController)
             }
         }
     }
 
     @Composable
-    fun MainScreen(username : String,navController: NavController, viewModel: MainViewModel) {
-        val gradientColors = listOf(Cyan, LightBlue, Purple)
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                modifier = Modifier,
-                text = "Welcome to Spotify Wrapped $username!",
-                fontSize = 30.sp,
-                style = TextStyle(
-                    brush = Brush.linearGradient(
-                        colors = gradientColors
-                    )
-                )
-            )
+    fun MainScreen(navController: NavController, viewModel: MainViewModel) {
             Spacer(modifier = Modifier.height(16.dp))
+        IconButton(onClick = { navController.navigate("settings") }) {
+            Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
+        }
             Button(
                 onClick = {
                     spotifyRequests.getToken(this@MainActivity)
@@ -127,15 +121,14 @@ class MainActivity : ComponentActivity() {
                         Toast.makeText(this@MainActivity, "Please login with Spotify first", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
-                    viewModel.retrieveSpotifyHistory(mAccessToken)
+                    viewModel.retrieveSpotifyData(mAccessToken)
                     navController.navigate("wrapped")
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                androidx.compose.material.Text("Get Wrapped Playlist")
+                androidx.compose.material.Text("Create Wrapped")
             }
         }
-    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -165,10 +158,53 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+//Top Songs, Top Artists, Total Number of songs listened to,
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun Wrapped(trackNames: List<String>, navController: NavController) {
+    fun WrappedScreen1(username: String, navController: NavController) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Wrapped Tracks") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                )
+            }
+        ) { innerPadding ->
+            LazyColumn(contentPadding = innerPadding) {
+                // Modified to 'contentPadding' instead of 'modifier.padding'
+                item {
+                    val gradientColors = listOf(Cyan, LightBlue, Purple)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            modifier = Modifier,
+                            text = "Welcome to Spotify Wrapped $username!",
+                            fontSize = 30.sp,
+                            style = TextStyle(
+                                brush = Brush.linearGradient(
+                                    colors = gradientColors
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun WrappedScreen2(trackNames: List<String>, navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -192,6 +228,32 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun WrappedScreen3(artistNames: List<String>, navController: NavController) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Wrapped Tracks") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                )
+            }
+        ) { innerPadding ->
+            LazyColumn(modifier = Modifier.padding(innerPadding)) {
+                items(artistNames) { artistName ->
+                    Text(text = artistName, modifier = Modifier.padding(16.dp))
+                }
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val response = AuthorizationClient.getResponse(resultCode, data)
@@ -206,4 +268,5 @@ class MainActivity : ComponentActivity() {
             Log.d("Code", mAccessCode)
         }
     }
+
 }
