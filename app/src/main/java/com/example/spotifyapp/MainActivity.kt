@@ -25,7 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -36,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color.Companion.Cyan
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,9 +44,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.spotifyapp.ui.theme.LightBlue
 import com.example.spotifyapp.ui.theme.Purple
-import com.example.spotifyapp.AnimatedPreloader
 import com.example.spotifyapp.viewmodels.MainViewModel
 import com.spotify.sdk.android.auth.AuthorizationClient
 
@@ -102,33 +104,53 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MainScreen(navController: NavController, viewModel: MainViewModel) {
-            Spacer(modifier = Modifier.height(16.dp))
-        IconButton(onClick = { navController.navigate("settings") }) {
-            Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
-        }
-            Button(
-                onClick = {
-                    spotifyRequests.getToken(this@MainActivity)
-                },
-                modifier = Modifier.fillMaxWidth()
+        val context = LocalContext.current
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            // Lottie animation
+            AnimatedPreloader(resource = R.raw.wrapped1_background)
+
+            // Main content
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                androidx.compose.material.Text("Login With Spotify")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    if (!::mAccessToken.isInitialized) {
-                        Toast.makeText(this@MainActivity, "Please login with Spotify first", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-                    viewModel.retrieveSpotifyData(mAccessToken)
-                    navController.navigate("wrapped")
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                androidx.compose.material.Text("Create Wrapped")
+                Spacer(modifier = Modifier.height(16.dp))
+                IconButton(onClick = { navController.navigate("settings") }) {
+                    Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
+                }
+                Button(
+                    onClick = {
+                        spotifyRequests.getToken(this@MainActivity)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Login With Spotify")
+                }
+                Button(
+                    onClick = {
+                        if (!::mAccessToken.isInitialized) {
+                            Toast.makeText(context, "Please login with Spotify first", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+                        viewModel.retrieveSpotifyData(mAccessToken)
+                        navController.navigate("wrapped")
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Create Wrapped")
+                }
             }
         }
+    }
+
+
+
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
