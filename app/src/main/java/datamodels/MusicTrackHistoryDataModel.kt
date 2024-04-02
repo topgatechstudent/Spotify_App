@@ -1,50 +1,44 @@
 package datamodels
+
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SpotifyTrackHistoryResponse(
-    val items: List<PlayTrackHistoryObject>
+data class SpotifyTopTracksResponse(
+    val items: List<TrackItem>
 )
 
 @Serializable
-data class PlayTrackHistoryObject(
-    val track: Track,
-    val playedAt: String,
-    //val context: TrackContext?
-)
-
-@Serializable
-data class Track(
-    /*val album: Album,
+data class TrackItem(
+    val album: Album,
     val artists: List<Artist>,
-    val available_markets: List<String>,
     val disc_number: Int,
     val duration_ms: Int,
     val explicit: Boolean,
     val external_urls: Map<String, String>,
     val href: String,
     val id: String,
-    val is_playable: Boolean = false, */
+    val is_local: Boolean,
     val name: String,
-    /*val popularity: Int,
+    val popularity: Int,
     val preview_url: String?,
     val track_number: Int,
     val type: String,
-    val uri: String, */
+    val uri: String
 )
 
-/*@Serializable
+@Serializable
 data class Album(
     val album_type: String,
-    val total_tracks: Int,
+    val artists: List<Artist>,
     val available_markets: List<String>,
     val external_urls: Map<String, String>,
     val href: String,
     val id: String,
-    val images: List<Image>,
+    val images: List<TrackImage>,
     val name: String,
     val release_date: String,
     val release_date_precision: String,
+    val total_tracks: Int,
     val type: String,
     val uri: String
 )
@@ -60,16 +54,8 @@ data class Artist(
 )
 
 @Serializable
-data class Image(
-    val url: String,
+data class TrackImage(
     val height: Int,
+    val url: String,
     val width: Int
 )
-
-@Serializable
-data class TrackContext(
-    val type: String,
-    val href: String?,
-    val external_urls: Map<String, String>?,
-    val uri: String
-)*/

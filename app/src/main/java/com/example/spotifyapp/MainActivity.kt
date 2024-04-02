@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,16 +50,22 @@ import com.example.spotifyapp.ui.theme.Purple
 import com.example.spotifyapp.viewmodels.MainViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.spotify.sdk.android.auth.AuthorizationClient
 
 class MainActivity : ComponentActivity() {
-    val clientID = "3e5170dac3b84657bd5747aa48749987"
+
+    private lateinit var databaseReference: DatabaseReference
+
+    val clientID = "8e7f849f40ba4e4d80a02604da0e3a76"
     val redirectURI = "gt-wrapped://auth"
     val spotifyRequests = SpotifyRequests(clientID, redirectURI)
     private lateinit var mAccessToken : String
     private lateinit var mAccessCode : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        databaseReference = FirebaseDatabase.getInstance().reference.child("users")
         val uuid = intent.getStringExtra("uuid")
         setContent {
             if (uuid != null) {
@@ -106,13 +113,6 @@ class MainActivity : ComponentActivity() {
     fun MainScreen(navController: NavController, viewModel: MainViewModel) {
         val context = LocalContext.current
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            // Lottie animation
-            AnimatedPreloader(resource = R.raw.wrapped1_background)
-
             // Main content
             Column(
                 modifier = Modifier
@@ -139,7 +139,7 @@ class MainActivity : ComponentActivity() {
                             return@Button
                         }
                         viewModel.retrieveSpotifyData(mAccessToken)
-                        navController.navigate("wrapped")
+                        navController.navigate("wrappedStart")
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -147,7 +147,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
 
 
 
@@ -194,39 +193,52 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun WrappedScreen1(uuid: String, navController: NavController) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Wrapped Tracks") },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
-                        }
-                    },
-                )
-            }
-        ) { innerPadding ->
-            LazyColumn(contentPadding = innerPadding) {
-                // Modified to 'contentPadding' instead of 'modifier.padding'
-                item {
-                    val gradientColors = listOf(Cyan, LightBlue, Purple)
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            modifier = Modifier,
-                            text = "Welcome to Spotify Wrapped $uuid!",
-                            fontSize = 30.sp,
-                            style = TextStyle(
-                                brush = Brush.linearGradient(
-                                    colors = gradientColors
+        Box(
+
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable{navController.navigate("wrappedTracks")}
+        ) {
+            // Lottie animation
+            AnimatedPreloader(resource = R.raw.wrapped1_background)
+
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Welcome") },
+                        navigationIcon = {
+                            IconButton(onClick = { navController.navigateUp() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = "Back"
+                                )
+                            }
+                        },
+                    )
+                }
+            ) { innerPadding ->
+                LazyColumn(contentPadding = innerPadding) {
+                    // Modified to 'contentPadding' instead of 'modifier.padding'
+                    item {
+                        val gradientColors = listOf(Cyan, LightBlue, Purple)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text = "Welcome to Spotify Wrapped $uuid!",
+                                fontSize = 30.sp,
+                                style = TextStyle(
+                                    brush = Brush.linearGradient(
+                                        colors = gradientColors
+                                    )
                                 )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -236,24 +248,37 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun WrappedScreen2(trackNames: List<String>, navController: NavController) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Wrapped Tracks") },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
-                        }
-                    },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+        Box(
+
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { navController.navigate("wrappedArtists") }
+        ) {
+            // Lottie animation
+            AnimatedPreloader(resource = R.raw.wrapped1_background)
+
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Wrapped Tracks") },
+                        navigationIcon = {
+                            IconButton(onClick = { navController.navigateUp() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = "Back"
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
                     )
-                )
-            }
-        ) { innerPadding ->
-            LazyColumn(modifier = Modifier.padding(innerPadding)) {
-                items(trackNames) { trackName ->
-                    Text(text = trackName, modifier = Modifier.padding(16.dp))
+                }
+            ) { innerPadding ->
+                LazyColumn(modifier = Modifier.padding(innerPadding)) {
+                    items(trackNames) { trackName ->
+                        Text(text = trackName, modifier = Modifier.padding(16.dp))
+                    }
                 }
             }
         }
@@ -265,7 +290,7 @@ class MainActivity : ComponentActivity() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Wrapped Tracks") },
+                    title = { Text("Top Artists") },
                     navigationIcon = {
                         IconButton(onClick = { navController.navigateUp() }) {
                             Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")

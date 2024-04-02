@@ -74,10 +74,11 @@ public class SpotifyRequests {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
-                    callback.onSuccess(jsonObject.toString());
-                } catch (JSONException e) {
-                    Log.d("JSON", "Failed to parse data: " + e);
+                    final String jsonResponse = response.body().string();
+                    callback.onSuccess(jsonResponse);
+                    Log.d("HTTP", "Response: " + jsonResponse);
+                } catch (IOException e) {
+                    Log.d("HTTP", "Failed to read response body: " + e);
                     callback.onFailure(e);
                 }
             }
