@@ -47,6 +47,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.spotifyapp.ui.theme.LightBlue
 import com.example.spotifyapp.ui.theme.Purple
 import com.example.spotifyapp.viewmodels.MainViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.spotify.sdk.android.auth.AuthorizationClient
 
 class MainActivity : ComponentActivity() {
@@ -174,6 +176,15 @@ class MainActivity : ComponentActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = "Settings Page")
+                Button(
+                    onClick = {
+                        Firebase.auth.signOut()
+                        finish()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Logout")
+                }
             }
         }
     }
