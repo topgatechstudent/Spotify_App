@@ -44,9 +44,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.spotifyapp.ui.theme.LightBlue
 import com.example.spotifyapp.ui.theme.Purple
 import com.example.spotifyapp.viewmodels.MainViewModel
@@ -60,25 +57,25 @@ class MainActivity : ComponentActivity() {
     private lateinit var mAccessCode : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val username = intent.getStringExtra("username")
+        val uuid = intent.getStringExtra("uuid")
         setContent {
-            if (username != null) {
-                MyApp(username)
+            if (uuid != null) {
+                MyApp(uuid)
             }
         }
     }
 
     @Composable
-    fun MyApp(username: String) {
+    fun MyApp(uuid: String) {
         // Obtain ViewModel instance
         val mainViewModel: MainViewModel = viewModel()
 
         // Now you can use mainViewModel
-        myAppContent(mainViewModel, username)
+        myAppContent(mainViewModel, uuid)
     }
 
     @Composable
-    fun myAppContent(viewModel: MainViewModel, username: String) {
+    fun myAppContent(viewModel: MainViewModel, uuid: String) {
         val navController = rememberNavController()
         val trackNames by viewModel.trackNames.collectAsState()
         val artistNames by viewModel.artistNames.collectAsState()
@@ -91,7 +88,7 @@ class MainActivity : ComponentActivity() {
                 SettingsPage(navController)
             }
             composable("wrappedStart") {
-                WrappedScreen1(username, navController)
+                WrappedScreen1(uuid, navController)
             }
             composable("wrappedTracks") {
                 WrappedScreen2(trackNames, navController)
@@ -102,6 +99,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    //Add View of old created, Notifications?, Share function, hold spotify info somehow
     @Composable
     fun MainScreen(navController: NavController, viewModel: MainViewModel) {
         val context = LocalContext.current
@@ -151,7 +149,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-
+//Account Logout, Account Deletion, Dark Mode Toggle
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun SettingsPage(navController: NavController){
@@ -180,11 +178,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-//Top Songs, Top Artists, Total Number of songs listened to,
+//Top Songs, Top Artists, Genre, ..., hear song clips while slide plays
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun WrappedScreen1(username: String, navController: NavController) {
+    fun WrappedScreen1(uuid: String, navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -210,7 +208,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Text(
                             modifier = Modifier,
-                            text = "Welcome to Spotify Wrapped $username!",
+                            text = "Welcome to Spotify Wrapped $uuid!",
                             fontSize = 30.sp,
                             style = TextStyle(
                                 brush = Brush.linearGradient(

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "757888481661",
-    "project_id": "spotify-app-dfd42",
-    "storage_bucket": "spotify-app-dfd42.appspot.com"
+    "project_number": "483226857062",
+    "project_id": "spotify-wrapped-c3c74",
+    "storage_bucket": "spotify-wrapped-c3c74.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:757888481661:android:12eca1a888eabecb80b414",
+        "mobilesdk_app_id": "1:483226857062:android:6d74f48e79a8515ad247a7",
         "android_client_info": {
           "package_name": "com.example.spotifyapp"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCsH7fzcfsd5LPE82PlbuNdavHR44m0Rjo"
+          "current_key": "AIzaSyDKzdw8LmH3VK_5uJfY3hst2XpxJ17Pnz4"
         }
       ],
       "services": {
