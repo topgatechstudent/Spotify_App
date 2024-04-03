@@ -195,9 +195,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun WrappedScreen1(uuid: String, navController: NavController) {
         Scaffold(
-            topBar = {
-
-            },
+            modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
             Box(
                 modifier = Modifier
@@ -205,7 +203,7 @@ class MainActivity : ComponentActivity() {
                     .clickable{navController.navigate("wrappedTracks")}
             ) {
                 // Lottie animation as the background
-                AnimatedPreloader(resource = R.raw.wrapped1_background)
+                AnimatedPreloader(resource = R.raw.wrapped1_background, fillScreen = true)
                 // Your main content goes here
                 LazyColumn(contentPadding = innerPadding) {
                     item {
@@ -252,63 +250,78 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun WrappedScreen2(trackNames: List<String>, navController: NavController) {
-        Box(
-
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable { navController.navigate("wrappedArtists") }
-        ) {
-            // Lottie animation
-            AnimatedPreloader(resource = R.raw.starfish)
-
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("Wrapped Tracks") },
-                        navigationIcon = {
-                            IconButton(onClick = { navController.navigateUp() }) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Back"
-                                )
-                            }
-                        },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { navController.navigate("wrappedArtists") }
+            ) {
+                // Lottie animation as the background
+                AnimatedPreloader(
+                    resource = R.raw.starfish, fillScreen = false
+                )
+                // Your main content goes here
+                LazyColumn(contentPadding = innerPadding) {
+                    item {
+                        TopAppBar(
+                            title = {},
+                            colors =  TopAppBarDefaults.centerAlignedTopAppBarColors(Color.Transparent),
+                            navigationIcon = {
+                                IconButton(onClick = { navController.navigateUp() }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ArrowBack,
+                                        contentDescription = "Back"
+                                    )
+                                }
+                            },
                         )
-                    )
-                }
-            ) { innerPadding ->
-                LazyColumn(modifier = Modifier.padding(innerPadding)) {
+                    }
                     items(trackNames) { trackName ->
-                        Text(text = trackName, modifier = Modifier.padding(16.dp))
+                        Text(
+                            text = trackName,
+                            modifier = Modifier.padding(16.dp),
+                        )
                     }
                 }
             }
         }
     }
 
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun WrappedScreen3(artistNames: List<String>, navController: NavController) {
         Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Top Artists") },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
-                        }
-                    },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                )
-            }
+            modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
-            LazyColumn(modifier = Modifier.padding(innerPadding)) {
-                items(artistNames) { artistName ->
-                    Text(text = artistName, modifier = Modifier.padding(16.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { navController.navigate("wrappedArtists") }
+            ) {
+                // Lottie animation as the background
+                AnimatedPreloader(resource = R.raw.wrapped1_background, fillScreen = true)
+                // Your main content goes here
+                LazyColumn(contentPadding = innerPadding) {
+                    item {
+                        TopAppBar(
+                            title = {},
+                            colors =  TopAppBarDefaults.centerAlignedTopAppBarColors(Color.Transparent),
+                            navigationIcon = {
+                                IconButton(onClick = { navController.navigateUp() }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ArrowBack,
+                                        contentDescription = "Back"
+                                    )
+                                }
+                            },
+                        )
+                    }
+                    items(artistNames) { artistName ->
+                        Text(text = artistName, modifier = Modifier.padding(16.dp))
+                    }
                 }
             }
         }
