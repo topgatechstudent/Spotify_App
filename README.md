@@ -1,7 +1,7 @@
 # Spotify Wrapped
 
 ## Assignments - 4/2/2024
-Adam - Working on Lottie files
+Adam - Working on ?
 
 Chloe - Settings page UI/UX
 
@@ -15,7 +15,7 @@ Inam - Please communicate have not been able to get in touch
 
 Joey - Start Wrapped Screen 3
 
-Koundi - Improve sign up the system by finding a way around the 1hr api limit / Setup CI CD on Github Actions
+Koundi - Setup CI CD on Github Actions / Setup Firebase Database for storage of wrapped
 
 # Update date - 8/14/2024
 
