@@ -127,6 +127,8 @@ class MainActivity : ComponentActivity() {
                 }
                 Button(
                     onClick = {
+
+                        //Refresh tokens??
                         spotifyRequests.getToken(this@MainActivity)
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -184,6 +186,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Logout")
+                }
+                Button(onClick = {
+                    val user = Firebase.auth.currentUser!!
+//Should Probably Create a confirmation for this!!!
+                    user.delete()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("Deletion!!!", "User account deleted.")
+                                finish()
+                            }
+                        }
+                }){
+                    Text("Delete Account")
                 }
             }
         }
