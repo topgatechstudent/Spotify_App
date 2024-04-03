@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -193,33 +194,35 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun WrappedScreen1(uuid: String, navController: NavController) {
-        Box(
+        Scaffold(
+            topBar = {
 
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable{navController.navigate("wrappedTracks")}
-        ) {
-            // Lottie animation
-            AnimatedPreloader(resource = R.raw.wrapped1_background)
-
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("Welcome") },
-                        navigationIcon = {
-                            IconButton(onClick = { navController.navigateUp() }) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Back"
-                                )
-                            }
-                        },
-                    )
-                }
-            ) { innerPadding ->
+            },
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable{navController.navigate("wrappedTracks")}
+            ) {
+                // Lottie animation as the background
+                AnimatedPreloader(resource = R.raw.wrapped1_background)
+                // Your main content goes here
                 LazyColumn(contentPadding = innerPadding) {
-                    // Modified to 'contentPadding' instead of 'modifier.padding'
                     item {
+
+                        TopAppBar(
+                            title = {},
+                            navigationIcon = {
+                                IconButton(onClick = { navController.navigateUp() }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ArrowBack,
+                                        contentDescription = "Back"
+                                    )
+                                }
+                            },
+                            colors =  TopAppBarDefaults.centerAlignedTopAppBarColors(Color.Transparent)
+                        )
+
                         val gradientColors = listOf(Cyan, LightBlue, Purple)
                         Column(
                             modifier = Modifier
@@ -245,6 +248,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun WrappedScreen2(trackNames: List<String>, navController: NavController) {
@@ -255,7 +259,7 @@ class MainActivity : ComponentActivity() {
                 .clickable { navController.navigate("wrappedArtists") }
         ) {
             // Lottie animation
-            AnimatedPreloader(resource = R.raw.wrapped1_background)
+            AnimatedPreloader(resource = R.raw.starfish)
 
             Scaffold(
                 topBar = {

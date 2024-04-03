@@ -1,8 +1,10 @@
 package com.example.spotifyapp
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -20,13 +22,14 @@ fun AnimatedPreloader(modifier: Modifier = Modifier, resource : Int) {
     val preloaderProgress by animateLottieCompositionAsState(
         preloaderLottieComposition,
         iterations = LottieConstants.IterateForever,
-        isPlaying = true
-    )
+        isPlaying = true,
 
+    )
 
     LottieAnimation(
         composition = preloaderLottieComposition,
         progress = preloaderProgress,
-        modifier = modifier
+        modifier = Modifier,
+        contentScale = ContentScale.FillBounds
     )
 }
