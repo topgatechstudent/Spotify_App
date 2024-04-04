@@ -18,10 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,7 +56,6 @@ import com.example.spotifyapp.viewmodels.MainViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.spotify.sdk.android.auth.AuthorizationClient
 
 class MainActivity : ComponentActivity() {
@@ -121,7 +118,6 @@ class MainActivity : ComponentActivity() {
     //Add View of old created, Notifications?, Share function, hold spotify info somehow
     @Composable
     fun MainScreen(navController: NavController) {
-        val context = LocalContext.current
             // Main content
             Column(
                 modifier = Modifier
@@ -156,7 +152,7 @@ class MainActivity : ComponentActivity() {
                     navigationIcon = {
                         IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
-                                imageVector = Icons.Filled.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Back"
                             )
                         }
