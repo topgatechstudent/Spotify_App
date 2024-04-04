@@ -42,14 +42,14 @@ public class AuthenticationActivity extends AppCompatActivity {
         setContentView(R.layout.basic_views);
 
         // Initialize the views
-        tokenTextView = (TextView) findViewById(R.id.token_text_view);
-        codeTextView = (TextView) findViewById(R.id.code_text_view);
-        profileTextView = (TextView) findViewById(R.id.response_text_view);
+        tokenTextView = findViewById(R.id.token_text_view);
+        codeTextView = findViewById(R.id.code_text_view);
+        profileTextView = findViewById(R.id.response_text_view);
 
         // Initialize the buttons
-        Button tokenBtn = (Button) findViewById(R.id.token_btn);
-        Button codeBtn = (Button) findViewById(R.id.code_btn);
-        Button profileBtn = (Button) findViewById(R.id.profile_btn);
+        Button tokenBtn = findViewById(R.id.token_btn);
+        Button codeBtn = findViewById(R.id.code_btn);
+        Button profileBtn = findViewById(R.id.profile_btn);
 
         // Initialize the SpotifyRequests object
         SpotifyRequests spotifyRequests = new SpotifyRequests(CLIENT_ID, REDIRECT_URI);

@@ -57,9 +57,9 @@ public class SpotifyRequests {
         AuthorizationClient.openLoginActivity(activity, AUTH_CODE_REQUEST_CODE, request);
     }
 
-    public void getSpotifyTrackHistory(String mAccessToken, SpotifyTrackHistoryCallback callback) {
+    public void getSpotifyTrackHistory(String mAccessToken, String timeRange, SpotifyTrackHistoryCallback callback) {
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/top/tracks?limit=10")
+                .url("https://api.spotify.com/v1/me/top/tracks?time_range="+timeRange+"&limit=10")
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
         cancelCall();
@@ -85,9 +85,9 @@ public class SpotifyRequests {
         });
     }
 
-    public void getSpotifyArtistHistory(String mAccessToken, SpotifyArtistHistoryCallback callback) {
+    public void getSpotifyArtistHistory(String mAccessToken, String timeRange, SpotifyArtistHistoryCallback callback) {
         final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/top/artists?limit=10")
+                .url("https://api.spotify.com/v1/me/top/artists?time_range="+timeRange+"&limit=10")
                 .addHeader("Authorization", "Bearer " + mAccessToken)
                 .build();
         cancelCall();

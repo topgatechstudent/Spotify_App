@@ -22,10 +22,10 @@ class MainViewModel : ViewModel() {
     val artistNames: StateFlow<List<String>> = _artistNames
     val spotifyRequests = SpotifyRequests(clientID, redirectURI)
 
-    fun retrieveSpotifyData(mAccessToken: String) {
+    fun retrieveSpotifyData(mAccessToken: String, timeRange : String) {
         viewModelScope.launch {
             // Assume spotifyRequests is accessible here or passed somehow
-            spotifyRequests.getSpotifyTrackHistory(mAccessToken, object :
+            spotifyRequests.getSpotifyTrackHistory(mAccessToken, timeRange , object :
                 SpotifyTrackHistoryCallback {
                 override fun onSuccess(jsonResponse: String) {
                     val json = Json { ignoreUnknownKeys = true }
@@ -33,7 +33,7 @@ class MainViewModel : ViewModel() {
                         val trackHistory = json.decodeFromString<SpotifyTopTracksResponse>(jsonResponse)
                         _trackNames.value = trackHistory.items.map { it.name }
 
-                        spotifyRequests.getSpotifyArtistHistory(mAccessToken, object :
+                        spotifyRequests.getSpotifyArtistHistory(mAccessToken, timeRange, object :
                             SpotifyArtistHistoryCallback {
                             override fun onSuccess(jsonResponse: String) {
                                 val json = Json { ignoreUnknownKeys = true }
