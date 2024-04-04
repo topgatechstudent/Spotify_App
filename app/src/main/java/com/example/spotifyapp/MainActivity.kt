@@ -278,6 +278,25 @@ class MainActivity : ComponentActivity() {
                 }){
                     Text("Delete Account")
                 }
+                Button(
+                    onClick = {
+                        val user = Firebase.auth.currentUser!!
+                        val emailAddress = user.email
+
+                        if (emailAddress != null) {
+                            Firebase.auth.sendPasswordResetEmail(emailAddress)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        Log.d("RESETUSER", "Email sent.")
+                                    }
+                                }
+                        }
+
+                    }
+                ){
+
+                    Text("Forgot Password")
+                }
             }
         }
     }
